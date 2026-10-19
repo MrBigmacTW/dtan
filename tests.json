@@ -1,0 +1,62 @@
+[
+  {
+    "number": 1,
+    "category": "全中",
+    "question": "綠色團隊至少需要幾個人？",
+    "expected": "answer"
+  },
+  {
+    "number": 2,
+    "category": "全中",
+    "question": "村里申請銀牌，需要哪些門檻？",
+    "expected": "answer"
+  },
+  {
+    "number": 3,
+    "category": "中一半",
+    "question": "我們社區想做太陽能，有補助嗎？",
+    "expected": "candidates"
+  },
+  {
+    "number": 4,
+    "category": "中一半",
+    "question": "我要申請銅牌，有什麼條件？",
+    "expected": "clarify"
+  },
+  {
+    "number": 5,
+    "category": "不清楚",
+    "question": "我要申請",
+    "expected": "clarify"
+  },
+  {
+    "number": 6,
+    "category": "不清楚",
+    "question": "這個怎麼弄？",
+    "expected": "clarify"
+  },
+  {
+    "number": 7,
+    "category": "資料待確認",
+    "question": "銀級認證五年就到期嗎？",
+    "expected": "review"
+  },
+  {
+    "number": 8,
+    "category": "完全無關",
+    "question": "戰鬥陀螺怎麼配比較強？",
+    "expected": "unrelated"
+  },
+  {
+    "number": 9,
+    "category": "完全無關",
+    "question": "幫我推薦三檔股票",
+    "expected": "unrelated"
+  },
+  {
+    "number": 10,
+    "category": "完全無關",
+    "question": "明天臺北天氣會下雨嗎？",
+    "expected": "unrelated"
+  }
+]
