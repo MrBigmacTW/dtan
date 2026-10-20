@@ -10,7 +10,8 @@ export function createEngine(faq){
  const byId=id=>faq.find(q=>q.id===id);
  const origin=id=>faq.find(q=>q.origins.includes('V2:'+id));
  function result(q){
-  if(q.needsReview)return {type:'review',text:'這題的資料目前需要進一步確認，暫時不提供確定結論。你可以先查看官方說明，或聯絡客服協助。',items:[q]};
+  if(!q)return {type:'no-match',text:'此題暫時無法載入，請返回主選單或聯絡客服。',state:{}};
+  if(q.needsReview)return {type:'review',text:q.reviewReason||'這題的資料目前需要進一步確認，暫時不提供確定結論。請查看官方文件或聯絡客服協助。',items:[q]};
   return {type:q.kind.includes('導引')||q.kind==='原網站查詢'?'navigation':'answer',text:q.answer,items:[q]};
  }
  function threshold(level,grade){return faq.find(q=>q.question===level+'申請'+grade+'評等的門檻是什麼？');}
@@ -29,6 +30,7 @@ export function createEngine(faq){
    return {type:'correction',text:'您是否想了解「'+grade+'認證申請」？',choices:[{label:'是，了解'+grade+'申請',query:'申請'+grade+'的條件'}],state:{}};
   }
   const exactEntry=faq.find(q=>normalize(q.question)===text||q.aliases.some(a=>normalize(a)===text));
+  if(exactEntry)return {...result(exactEntry),state:{}};
   const subject=/申請|認證|評等|銅級|銀級|補件|退件|重送|重新送|重新申請|打槍|審查/.test(text);
   const history=/重送|重新送|重新申請|補件|退件/.test(text)&&/幾次|多少次|紀錄|記錄|歷程|次數/.test(text);
   const statistics=/最容易|最常|成功率|通過率|排名|統計|打槍|沒過|不通過|退件原因/.test(text);
@@ -58,7 +60,7 @@ export function createEngine(faq){
   if(/競賽|獲獎|得獎/.test(text))state.topic='competition';
   if(context.pending&&/^(村里|鄉鎮市區|縣市政府|銅級|銀級)$/.test(text))return search(context.pending+' '+input,{...state,pending:null});
   const hasGrade=!!grade||(/那.*呢|條件|門檻|幾項|幾個項目/.test(text)&&!!state.grade);
-  const wantsThreshold=hasGrade&&!/案例|補助|書面|現勘|評分比重|委員/.test(text)&&(/條件|門檻|申請|幾項|幾個|那.*呢|怎麼拿|怎麼取得/.test(text));
+  const wantsThreshold=hasGrade&&!/案例|補助|書面|現勘|評分比重|委員|升等|保留|文件|得分|未通過|沒通過|有效|期限|退件/.test(text)&&(/條件|門檻|申請|幾項|幾個|那.*呢|怎麼拿|怎麼取得/.test(text));
   const multiple=(hasGrade&&/密碼|帳號/.test(text))||(/補助/.test(text)&&hasGrade);
   if(multiple)return {type:'multiple',text:'你提到了不同的需求，想先處理哪一項？',choices:[{label:'認證條件',query:(state.level||'')+'申請'+(state.grade||'銀級')+'的條件'},{label:/密碼|帳號/.test(text)?'帳號與密碼':'補助資訊',query:/密碼|帳號/.test(text)?'若忘記系統密碼該如何處理？':'有哪些最新補助可以申請？'}],state};
   if(state.level&&!state.grade&&/認證|申請/.test(text)&&/條件|門檻/.test(text))return {type:'clarify',field:'grade',text:'你想申請銅級還是銀級？',choices:['銅級','銀級'].map(label=>({label,query:label})),state:{...state,pending:input,pendingField:'grade'}};
